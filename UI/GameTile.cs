@@ -30,6 +30,7 @@ public class GameTile
     public void Draw()
     {
         Raylib.DrawTexture(TextureManager.Instance.GetTexture(_texture), X, Y, Raylib.WHITE);
+        
         if (_texture == TextureManager.Textures.Blank && Bombs != 0)
         {
             Raylib.DrawText(Bombs.ToString(), X + TEXT_OFF_SET, Y + TEXT_OFF_SET, 8, Raylib.RED);
@@ -38,7 +39,10 @@ public class GameTile
 
     public void Uncover()
     {
-        _texture = TextureManager.Textures.Blank;
+        if (IsBomb)
+            _texture = TextureManager.Textures.Bomb;
+        else
+            _texture = TextureManager.Textures.Blank;
     }
 
     public int CycleCoveredType()

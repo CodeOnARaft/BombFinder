@@ -18,7 +18,8 @@ public class TextureManager
         Covered = 0,
         Blank = 1,
         Selected = 2,
-        Question = 3
+        Question = 3,
+        Bomb = 4
     }
 
     private List<Texture> _textures = new List<Texture>();
@@ -35,6 +36,9 @@ public class TextureManager
         _textures.Add(Raylib.LoadTextureFromImage(image));
 
         image = Raylib.LoadImage("images/question.png");
+        _textures.Add(Raylib.LoadTextureFromImage(image));
+
+         image = Raylib.LoadImage("images/bomb.png");
         _textures.Add(Raylib.LoadTextureFromImage(image));
     }
 
