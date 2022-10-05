@@ -39,7 +39,12 @@ public class TitleScreen
         Raylib.ClearBackground(Raylib.BLACK);
         Raylib.DrawText(Constants.GAME_TITLE, Constants.TITLE_SCREEN_WIDTH / 2 - Raylib.MeasureText(Constants.GAME_TITLE, 32) / 2, 5, 32, Raylib.WHITE);
 
-        _buttons.ForEach(x => x.Draw());
+        var pos = Raylib.GetMousePosition();
+        _buttons.ForEach(x =>
+        {
+            x.TestHover(pos);
+            x.Draw();
+        });
 
         Raylib.EndDrawing();
     }

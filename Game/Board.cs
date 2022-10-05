@@ -121,6 +121,10 @@ public class Board
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Raylib.BLACK);
 
+         var pos = Raylib.GetMousePosition();
+         _backToMenuButton.TestHover(pos);
+         _resetButton.TestHover(pos);
+         
         // Game Header
         DrawGameInfo();
 
