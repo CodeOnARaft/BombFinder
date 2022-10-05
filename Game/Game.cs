@@ -16,7 +16,8 @@ public class Game
     private enum Scene
     {
         Title,
-        Game
+        Game,
+        Credits
     }
 
     private Scene currentScene;
@@ -24,11 +25,10 @@ public class Game
     public void Play()
     {
         currentScene = Scene.Title;
-       
-        Raylib.InitWindow( TitleScreen.TITLE_SCREEN_WIDTH,  TitleScreen.TITLE_SCREEN_HEIGHT, "Bomb Finder!");
+
+        Raylib.InitWindow(TitleScreen.TITLE_SCREEN_WIDTH, TitleScreen.TITLE_SCREEN_HEIGHT, "Bomb Finder!");
         Raylib.SetTargetFPS(60);
         TitleScreen.Instance.SetupTitleScreen();
-        currentBoard = new Board(Board.Difficulties.Medium);
 
         // Main game loop
         var done = false;
@@ -41,21 +41,21 @@ public class Game
                     var action = TitleScreen.Instance.TestMouseClick();
                     switch (action)
                     {
-                        case TitleScreen.TitleScreenAction.Exit:                        
+                        case GameButton.GameButtonActions.Exit:
                             done = true;
                             break;
 
-                        case TitleScreen.TitleScreenAction.Easy:
+                        case GameButton.GameButtonActions.Easy:
                             currentBoard = new Board(Board.Difficulties.Easy);
                             currentScene = Scene.Game;
                             break;
 
-                        case TitleScreen.TitleScreenAction.Medium:
+                        case GameButton.GameButtonActions.Medium:
                             currentBoard = new Board(Board.Difficulties.Medium);
                             currentScene = Scene.Game;
                             break;
 
-                        case TitleScreen.TitleScreenAction.Hard:
+                        case GameButton.GameButtonActions.Hard:
                             currentBoard = new Board(Board.Difficulties.Hard);
                             currentScene = Scene.Game;
                             break;
@@ -67,7 +67,9 @@ public class Game
 
                 case Scene.Game:
                     currentBoard.DrawBoard();
-                    currentBoard.TestMouseClick();
+                    var boardAction = currentBoard.TestMouseClick();
+                    if (boardAction == GameButton.GameButtonActions.Exit)
+                        currentScene = Scene.Title;
                     break;
             }
 

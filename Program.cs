@@ -1,5 +1,4 @@
-﻿
-using BombFinder;
+﻿using BombFinder;
 
 Game.Instance.Play();
 
