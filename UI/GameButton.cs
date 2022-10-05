@@ -5,15 +5,7 @@ namespace BombFinder;
 
 public class GameButton
 {
-    public enum GameButtonActions
-    {
-        Nothing,
-        Credits,
-        Exit,
-        Easy,
-        Medium,
-        Hard,
-    }
+  
 
     private Rectangle _position;
     private string _text;

@@ -23,11 +23,11 @@ public class TitleScreen
     private TitleScreen()
     {
         var scd = TITLE_SCREEN_WIDTH / 2 - 100;
-        _buttons.Add(new GameButton(new Rectangle(scd, 55, 200, 50), "Easy", GameButton.GameButtonActions.Easy));
-        _buttons.Add(new GameButton(new Rectangle(scd, 135, 200, 50), "Medium", GameButton.GameButtonActions.Medium));
-        _buttons.Add(new GameButton(new Rectangle(scd, 215, 200, 50), "Hard", GameButton.GameButtonActions.Hard));
-        _buttons.Add(new GameButton(new Rectangle(scd, 295, 200, 50), "Credits", GameButton.GameButtonActions.Credits));
-        _buttons.Add(new GameButton(new Rectangle(scd, 375, 200, 50), "Exit", GameButton.GameButtonActions.Exit));
+        _buttons.Add(new GameButton(new Rectangle(scd, 55, 200, 50), "Easy", GameButtonActions.Easy));
+        _buttons.Add(new GameButton(new Rectangle(scd, 135, 200, 50), "Medium", GameButtonActions.Medium));
+        _buttons.Add(new GameButton(new Rectangle(scd, 215, 200, 50), "Hard", GameButtonActions.Hard));
+        _buttons.Add(new GameButton(new Rectangle(scd, 295, 200, 50), "Credits", GameButtonActions.Credits));
+        _buttons.Add(new GameButton(new Rectangle(scd, 375, 200, 50), "Exit", GameButtonActions.Exit));
 
         click = Raylib.LoadMusicStream("sounds/click.mp3");
     }
@@ -39,7 +39,7 @@ public class TitleScreen
     {
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Raylib.BLACK);
-        Raylib.DrawText($"Bomb Finder!", TITLE_SCREEN_WIDTH / 2 - Raylib.MeasureText($"Bomb Finder!", 32) / 2, 5, 32, Raylib.WHITE);
+        Raylib.DrawText(Constants.GAME_TITLE, TITLE_SCREEN_WIDTH / 2 - Raylib.MeasureText(Constants.GAME_TITLE, 32) / 2, 5, 32, Raylib.WHITE);
 
         _buttons.ForEach(x => x.Draw());
 
@@ -47,7 +47,7 @@ public class TitleScreen
     }
 
 
-    public GameButton.GameButtonActions TestMouseClick()
+    public GameButtonActions TestMouseClick()
     {
         var pos = Raylib.GetMousePosition();
 
@@ -61,7 +61,7 @@ public class TitleScreen
                 }
         }
 
-        return GameButton.GameButtonActions.Nothing;
+        return GameButtonActions.Nothing;
     }
 
 

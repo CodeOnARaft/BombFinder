@@ -5,66 +5,52 @@ namespace BombFinder;
 
 public class Board
 {
-    public const int SQUARE_SIZE = 32;
-    public const int BOARD_OFFSET = 10;
-    public const int BOARD_OFFSET_Y = 35;
-
-    const int BOMB = -1;
-
-    static Stack<Tuple<int, int>> stack = new Stack<Tuple<int, int>>();
+    Stack<Tuple<int, int>> stack = new Stack<Tuple<int, int>>();
 
     int numXTiles = 9;
     int numYTiles = 9;
     int numBombs = 9;
 
     GameTile[,]? _tiles;
-    public enum Difficulties
-    {
-        Easy,
-        Medium,
-        Hard
-    }
-
-    public enum BoardActons
-    {
-        Nothing,
-        ExitGame
-    }
 
 
-    private Difficulties _difficulty;
+    private GameDifficulties _difficulty;
     private int selectedSquares = 0;
-    private DateTime startTime;
+    private DateTime _startTime;
+    private DateTime _endTime;
+    private GameStates _gameState;
+    private GameButton _backToMenuButton;
+    private GameButton _resetButton;
 
-    public Board(Difficulties difficulty)
+    public Board(GameDifficulties difficulty)
     {
         _difficulty = difficulty;
 
         SetupBoard();
-        startTime = DateTime.Now;
     }
 
     private void SetupBoard()
     {
+
         switch (_difficulty)
         {
-            case Difficulties.Easy:
+            case GameDifficulties.Easy:
                 numXTiles = 9;
                 numYTiles = 9;
                 numBombs = 10;
-                Raylib.SetWindowSize(numXTiles * 32 + BOARD_OFFSET * 2, 600);
+                Raylib.SetWindowSize(numXTiles * Constants.SQUARE_SIZE + Constants.BOARD_OFFSET * 2, 600);
                 break;
-            case Difficulties.Medium:
+            case GameDifficulties.Medium:
                 numXTiles = 16;
                 numYTiles = 16;
                 numBombs = 40;
-                Raylib.SetWindowSize(numXTiles * 32 + BOARD_OFFSET * 2, 700);
+                Raylib.SetWindowSize(numXTiles * Constants.SQUARE_SIZE + Constants.BOARD_OFFSET * 2, 700);
                 break;
-            case Difficulties.Hard:
+            case GameDifficulties.Hard:
                 numXTiles = 30;
                 numYTiles = 16;
                 numBombs = 99;
-                Raylib.SetWindowSize(numXTiles * 32 + BOARD_OFFSET * 2, 800);
+                Raylib.SetWindowSize(numXTiles * Constants.SQUARE_SIZE + Constants.BOARD_OFFSET * 2, 800);
                 break;
 
         }
@@ -73,8 +59,8 @@ public class Board
         for (int x = 0; x < numXTiles; x++)
             for (int y = 0; y < numYTiles; y++)
             {
-                int posX = (x * SQUARE_SIZE) + BOARD_OFFSET;
-                int posY = (y * SQUARE_SIZE) + BOARD_OFFSET_Y;
+                int posX = (x * Constants.SQUARE_SIZE) + Constants.BOARD_OFFSET;
+                int posY = (y * Constants.SQUARE_SIZE) + Constants.BOARD_OFFSET_Y;
                 _tiles[x, y] = new GameTile(new System.Numerics.Vector2(posX, posY));
             }
 
@@ -110,6 +96,13 @@ public class Board
                 UpdateBombCount(x, y, 0, 1);
                 UpdateBombCount(x, y, 1, 1);
             }
+
+        var btnY = numYTiles * Constants.SQUARE_SIZE + Constants.BOARD_OFFSET_Y + 10;
+        _backToMenuButton = new GameButton(new Rectangle(Constants.BOARD_OFFSET, btnY, 175, Constants.BUTTON_STANDARD_HEIGHT), "Back to Menu", GameButtonActions.Exit);
+        _resetButton = new GameButton(new Rectangle(Constants.BOARD_OFFSET + 180, btnY, 100, Constants.BUTTON_STANDARD_HEIGHT), "Reset", GameButtonActions.Reset);
+
+        _startTime = DateTime.Now;
+        _gameState = GameStates.Playing;
     }
 
     private void UpdateBombCount(int x, int y, int x1, int y1)
@@ -128,49 +121,98 @@ public class Board
 
         for (int x = 0; x < numXTiles; x++)
             for (int y = 0; y < numYTiles; y++)
-                _tiles[x,y].Draw();
+                _tiles[x, y].Draw();
 
-        var span = DateTime.Now.Subtract(startTime);
+        var span = _gameState == GameStates.Playing ? DateTime.Now.Subtract(_startTime) : _endTime.Subtract(_startTime);
         Raylib.DrawText($"Time: {span.ToString("ss")}, Bombs: {numBombs - selectedSquares}", 5, 5, 20, Raylib.WHITE);
+        _backToMenuButton.Draw();
+        _resetButton.Draw();
+
+        switch (_gameState)
+        {
+            case GameStates.Won:
+                DrawWon();
+                break;
+
+            case GameStates.Lost:
+                DrawLost();
+                break;
+        }
+
         Raylib.EndDrawing();
     }
-    public GameButton.GameButtonActions TestMouseClick()
+
+    public void DrawWon()
+    {
+        Raylib.DrawRectangle(Constants.BOARD_OFFSET, Constants.BOARD_OFFSET_Y, 100, 100, Raylib.GREEN);
+    }
+
+    public void DrawLost()
+    {
+        Raylib.DrawRectangle(Constants.BOARD_OFFSET, Constants.BOARD_OFFSET_Y, 100, 100, Raylib.RED);
+
+    }
+
+    public GameButtonActions TestMouseClick()
     {
         var pos = Raylib.GetMousePosition();
-        if (pos.X >= BOARD_OFFSET && pos.Y >= BOARD_OFFSET_Y)
+
+        if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_LEFT_BUTTON))
         {
-            // Get the tile we are over (zero based)
-            var tileX = (int)Math.Floor((pos.X - BOARD_OFFSET) / SQUARE_SIZE);
-            var tileY = (int)Math.Floor((pos.Y - BOARD_OFFSET_Y) / SQUARE_SIZE);
+            if (_backToMenuButton.TestCollision(pos)) return _backToMenuButton.Action;
 
-            // if we are outside the board just skip
-            if (tileX >= numXTiles || tileY >= numYTiles) return GameButton.GameButtonActions.Nothing;
-
-
-            if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_LEFT_BUTTON))
+            if (_resetButton.TestCollision(pos))
             {
-                if (!_tiles[tileX, tileY].IsCovered) return GameButton.GameButtonActions.Nothing;
-
-                if (!_tiles[tileX, tileY].IsBomb)
-                {
-                    _tiles[tileX, tileY].Uncover();
-                    if (_tiles[tileX, tileY].Bombs == 0)
-                    {
-                        stack.Push(new Tuple<int, int>(tileX, tileY));
-                        UncoverBlanks();
-                    }
-                }
-
+                SetupBoard();
+                return _resetButton.Action;
             }
-            else if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_RIGHT_BUTTON))
-            {
-               var selectedDelta =_tiles[tileX,tileY].CycleCoveredType();
-               selectedSquares += selectedDelta;
+        }
+        // if we are outside the board just skip
+        if (pos.X < Constants.BOARD_OFFSET || pos.Y < Constants.BOARD_OFFSET_Y) return GameButtonActions.Nothing;
 
+        // Get the tile we are over (zero based)
+        var tileX = (int)Math.Floor((pos.X - Constants.BOARD_OFFSET) / Constants.SQUARE_SIZE);
+        var tileY = (int)Math.Floor((pos.Y - Constants.BOARD_OFFSET_Y) / Constants.SQUARE_SIZE);
+
+        // if we are outside the board just skip
+        if (tileX >= numXTiles || tileY >= numYTiles) return GameButtonActions.Nothing;
+
+
+        if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_LEFT_BUTTON))
+        {
+            switch (_gameState)
+            {
+                case GameStates.Playing:
+                    if (!_tiles[tileX, tileY].IsCovered) return GameButtonActions.Nothing;
+                    _tiles[tileX, tileY].Uncover();
+
+                    if (_tiles[tileX, tileY].IsBomb)
+                    {
+                        _gameState = GameStates.Lost;
+                        _endTime = DateTime.Now;
+                    }
+                    else
+                    {
+
+                        if (_tiles[tileX, tileY].Bombs == 0)
+                        {
+                            stack.Push(new Tuple<int, int>(tileX, tileY));
+                            UncoverBlanks();
+                        }
+                    }
+                    break;
+            }
+        }
+        else if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_RIGHT_BUTTON))
+        {
+            if (_gameState == GameStates.Playing)
+            {
+                var selectedDelta = _tiles[tileX, tileY].CycleCoveredType();
+                selectedSquares += selectedDelta;
             }
         }
 
-        return GameButton.GameButtonActions.Nothing;
+        return GameButtonActions.Nothing;
     }
 
     private void UncoverBlanks()
@@ -190,7 +232,7 @@ public class Board
 
     private void TestForStack(int xx, int yy)
     {
-        if (xx >= 0 && yy >= 0 && xx < numXTiles && yy < numYTiles && _tiles[xx, yy].Bombs >= 0 && _tiles[xx,yy].IsCovered)
+        if (xx >= 0 && yy >= 0 && xx < numXTiles && yy < numYTiles && _tiles[xx, yy].Bombs >= 0 && _tiles[xx, yy].IsCovered)
         {
             _tiles[xx, yy].Uncover();
             if (_tiles[xx, yy].Bombs == 0)

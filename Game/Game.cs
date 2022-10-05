@@ -13,20 +13,15 @@ public class Game
     private static Game _instace;
     public static Game Instance => _instace;
 
-    private enum Scene
-    {
-        Title,
-        Game,
-        Credits
-    }
+  
 
-    private Scene currentScene;
+    private GameScenes currentScene;
     private Board currentBoard;
     public void Play()
     {
-        currentScene = Scene.Title;
+        currentScene = GameScenes.Title;
 
-        Raylib.InitWindow(TitleScreen.TITLE_SCREEN_WIDTH, TitleScreen.TITLE_SCREEN_HEIGHT, "Bomb Finder!");
+        Raylib.InitWindow(TitleScreen.TITLE_SCREEN_WIDTH, TitleScreen.TITLE_SCREEN_HEIGHT, Constants.GAME_TITLE);
         Raylib.SetTargetFPS(60);
         TitleScreen.Instance.SetupTitleScreen();
 
@@ -36,28 +31,28 @@ public class Game
         {
             switch (currentScene)
             {
-                case Scene.Title:
+                case GameScenes.Title:
                     TitleScreen.Instance.DrawScreen();
                     var action = TitleScreen.Instance.TestMouseClick();
                     switch (action)
                     {
-                        case GameButton.GameButtonActions.Exit:
+                        case GameButtonActions.Exit:
                             done = true;
                             break;
 
-                        case GameButton.GameButtonActions.Easy:
-                            currentBoard = new Board(Board.Difficulties.Easy);
-                            currentScene = Scene.Game;
+                        case GameButtonActions.Easy:
+                            currentBoard = new Board(GameDifficulties.Easy);
+                            currentScene = GameScenes.Game;
                             break;
 
-                        case GameButton.GameButtonActions.Medium:
-                            currentBoard = new Board(Board.Difficulties.Medium);
-                            currentScene = Scene.Game;
+                        case GameButtonActions.Medium:
+                            currentBoard = new Board(GameDifficulties.Medium);
+                            currentScene = GameScenes.Game;
                             break;
 
-                        case GameButton.GameButtonActions.Hard:
-                            currentBoard = new Board(Board.Difficulties.Hard);
-                            currentScene = Scene.Game;
+                        case GameButtonActions.Hard:
+                            currentBoard = new Board(GameDifficulties.Hard);
+                            currentScene = GameScenes.Game;
                             break;
 
                         default:
@@ -65,11 +60,14 @@ public class Game
                     }
                     break;
 
-                case Scene.Game:
+                case GameScenes.Game:
                     currentBoard.DrawBoard();
                     var boardAction = currentBoard.TestMouseClick();
-                    if (boardAction == GameButton.GameButtonActions.Exit)
-                        currentScene = Scene.Title;
+                    if (boardAction == GameButtonActions.Exit)
+                    {
+                        currentScene = GameScenes.Title;
+                        TitleScreen.Instance.SetupTitleScreen();
+                    }
                     break;
             }
 

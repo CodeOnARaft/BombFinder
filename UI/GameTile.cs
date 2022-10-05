@@ -6,7 +6,7 @@ namespace BombFinder;
 public class GameTile
 {
     public const int BOMB = -1;
-    private const int TEXT_OFF_SET = -3 + Board.SQUARE_SIZE / 2;
+    private const int TEXT_OFF_SET = -3 + Constants.SQUARE_SIZE / 2;
     public int Bombs
     {
         get; set;
