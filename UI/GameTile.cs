@@ -22,19 +22,25 @@ public class GameTile
     public GameTile(Vector2 position)
     {
         _position = position;
+        _bounds = new Rectangle(_position.X, _position.Y, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE);
     }
 
     private int X => (int)_position.X;
     private int Y => (int)_position.Y;
+    private bool _hover = false;
+    private Rectangle _bounds;
 
     public void Draw()
     {
         Raylib.DrawTexture(TextureManager.Instance.GetTexture(_texture), X, Y, Raylib.WHITE);
-        
+
         if (_texture == GameTextures.Blank && Bombs != 0)
         {
             Raylib.DrawText(Bombs.ToString(), X + TEXT_OFF_SET, Y + TEXT_OFF_SET, 8, Raylib.RED);
         }
+
+        if (_hover)
+            Raylib.DrawRectangleLines((int)_position.X, (int)_position.Y, Constants.SQUARE_SIZE, Constants.SQUARE_SIZE, Raylib.YELLOW);
     }
 
     public void Uncover()
@@ -66,5 +72,10 @@ public class GameTile
         }
 
         return rvalue;
+    }
+
+    public void TestHover(Vector2 point)
+    {
+        _hover = Raylib.CheckCollisionPointRec(point, _bounds);
     }
 }

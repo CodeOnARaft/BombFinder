@@ -124,14 +124,17 @@ public class Board
          var pos = Raylib.GetMousePosition();
          _backToMenuButton.TestHover(pos);
          _resetButton.TestHover(pos);
-         
+
         // Game Header
         DrawGameInfo();
 
         // Game Board
         for (int x = 0; x < numXTiles; x++)
             for (int y = 0; y < numYTiles; y++)
-                _tiles[x, y].Draw();
+                {
+                    _tiles[x, y].TestHover(pos);
+                    _tiles[x, y].Draw();
+                }
 
         // Game Buttons
         _backToMenuButton.Draw();
