@@ -13,15 +13,6 @@ public class TextureManager
         _instance.LoadTextures();
     }
 
-    public enum Textures
-    {
-        Covered = 0,
-        Blank = 1,
-        Selected = 2,
-        Question = 3,
-        Bomb = 4
-    }
-
     private List<Texture> _textures = new List<Texture>();
 
     private void LoadTextures()
@@ -42,7 +33,7 @@ public class TextureManager
         _textures.Add(Raylib.LoadTextureFromImage(image));
     }
 
-    public Texture GetTexture(Textures texture){
+    public Texture GetTexture(GameTextures texture){
         return _textures[(int)texture];
     }
 

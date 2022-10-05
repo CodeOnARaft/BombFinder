@@ -13,11 +13,11 @@ public class GameTile
     }
 
     public bool IsBomb => Bombs == BOMB;
-    public bool IsCovered => _texture == TextureManager.Textures.Covered;
+    public bool IsCovered => _texture == GameTextures.Covered;
 
-    public bool IsBlank => _texture == TextureManager.Textures.Blank;
+    public bool IsBlank => _texture == GameTextures.Blank;
 
-    private TextureManager.Textures _texture = TextureManager.Textures.Covered;
+    private GameTextures _texture = GameTextures.Covered;
     private Vector2 _position;
     public GameTile(Vector2 position)
     {
@@ -31,7 +31,7 @@ public class GameTile
     {
         Raylib.DrawTexture(TextureManager.Instance.GetTexture(_texture), X, Y, Raylib.WHITE);
         
-        if (_texture == TextureManager.Textures.Blank && Bombs != 0)
+        if (_texture == GameTextures.Blank && Bombs != 0)
         {
             Raylib.DrawText(Bombs.ToString(), X + TEXT_OFF_SET, Y + TEXT_OFF_SET, 8, Raylib.RED);
         }
@@ -40,9 +40,9 @@ public class GameTile
     public void Uncover()
     {
         if (IsBomb)
-            _texture = TextureManager.Textures.Bomb;
+            _texture = GameTextures.Bomb;
         else
-            _texture = TextureManager.Textures.Blank;
+            _texture = GameTextures.Blank;
     }
 
     public int CycleCoveredType()
@@ -50,18 +50,18 @@ public class GameTile
         int rvalue = 0;
         switch (_texture)
         {
-            case TextureManager.Textures.Covered:
-                _texture = TextureManager.Textures.Selected;
+            case GameTextures.Covered:
+                _texture = GameTextures.Selected;
                 rvalue = 1;
                 break;
 
-            case TextureManager.Textures.Selected:
-                _texture = TextureManager.Textures.Question;
+            case GameTextures.Selected:
+                _texture = GameTextures.Question;
                 rvalue = -1;
                 break;
 
-            case TextureManager.Textures.Question:
-                _texture = TextureManager.Textures.Covered;
+            case GameTextures.Question:
+                _texture = GameTextures.Covered;
                 break;
         }
 

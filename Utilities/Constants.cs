@@ -8,5 +8,8 @@ public class Constants
     public const int BOARD_OFFSET_Y = 35;
 
     public const int BUTTON_STANDARD_HEIGHT = 50;
-    
+
+    public const int TITLE_SCREEN_WIDTH = 400;
+    public const int TITLE_SCREEN_HEIGHT = 450;
+
 }

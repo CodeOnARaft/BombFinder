@@ -116,7 +116,7 @@ public class Board
             _tiles[x, y].Bombs++;
     }
 
-    public void DrawBoard()
+    public void Draw()
     {
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Raylib.BLACK);
@@ -156,7 +156,7 @@ public class Board
         Raylib.DrawText($"{state}Time: {span.ToString("ss")}, Bombs: {numBombs - _selectedSquares}", 5, 5, 20, Raylib.WHITE);
     }
 
-    public GameButtonActions TestMouseClick()
+    public GameButtonActions TestInput()
     {
         var pos = Raylib.GetMousePosition();
 

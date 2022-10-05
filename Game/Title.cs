@@ -3,12 +3,8 @@ using Raylib_CsLo;
 
 namespace BombFinder;
 
-
-
 public class TitleScreen
 {
-    public const int TITLE_SCREEN_WIDTH = 400;
-    public const int TITLE_SCREEN_HEIGHT = 450;
     private static TitleScreen _instance;
     public static TitleScreen Instance => _instance;
 
@@ -22,7 +18,7 @@ public class TitleScreen
     private Music click;
     private TitleScreen()
     {
-        var scd = TITLE_SCREEN_WIDTH / 2 - 100;
+        var scd = Constants.TITLE_SCREEN_WIDTH / 2 - 100;
         _buttons.Add(new GameButton(new Rectangle(scd, 55, 200, 50), "Easy", GameButtonActions.Easy));
         _buttons.Add(new GameButton(new Rectangle(scd, 135, 200, 50), "Medium", GameButtonActions.Medium));
         _buttons.Add(new GameButton(new Rectangle(scd, 215, 200, 50), "Hard", GameButtonActions.Hard));
@@ -33,13 +29,15 @@ public class TitleScreen
     }
     public void SetupTitleScreen()
     {
-        Raylib.SetWindowSize(TITLE_SCREEN_WIDTH, TITLE_SCREEN_HEIGHT);
+        Raylib.SetWindowSize(Constants.TITLE_SCREEN_WIDTH, Constants.TITLE_SCREEN_HEIGHT);
+        SoundManager.Instance.PlayMusic(GameMusic.Title);
     }
-    public void DrawScreen()
+
+    public void Draw()
     {
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Raylib.BLACK);
-        Raylib.DrawText(Constants.GAME_TITLE, TITLE_SCREEN_WIDTH / 2 - Raylib.MeasureText(Constants.GAME_TITLE, 32) / 2, 5, 32, Raylib.WHITE);
+        Raylib.DrawText(Constants.GAME_TITLE, Constants.TITLE_SCREEN_WIDTH / 2 - Raylib.MeasureText(Constants.GAME_TITLE, 32) / 2, 5, 32, Raylib.WHITE);
 
         _buttons.ForEach(x => x.Draw());
 
@@ -47,7 +45,7 @@ public class TitleScreen
     }
 
 
-    public GameButtonActions TestMouseClick()
+    public GameButtonActions TestInput()
     {
         var pos = Raylib.GetMousePosition();
 
@@ -56,7 +54,7 @@ public class TitleScreen
             foreach (var button in _buttons)
                 if (button.TestCollision(pos))
                 {
-                    Raylib.PlayMusicStream(click);
+                    SoundManager.Instance.PlaySound(GameSounds.Click);
                     return button.Action;
                 }
         }
