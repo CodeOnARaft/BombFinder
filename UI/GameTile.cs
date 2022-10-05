@@ -15,6 +15,8 @@ public class GameTile
     public bool IsBomb => Bombs == BOMB;
     public bool IsCovered => _texture == TextureManager.Textures.Covered;
 
+    public bool IsBlank => _texture == TextureManager.Textures.Blank;
+
     private TextureManager.Textures _texture = TextureManager.Textures.Covered;
     private Vector2 _position;
     public GameTile(Vector2 position)

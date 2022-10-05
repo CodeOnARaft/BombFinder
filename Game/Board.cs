@@ -15,7 +15,7 @@ public class Board
 
 
     private GameDifficulties _difficulty;
-    private int selectedSquares = 0;
+    private int _selectedSquares = 0;
     private DateTime _startTime;
     private DateTime _endTime;
     private GameStates _gameState;
@@ -103,6 +103,7 @@ public class Board
 
         _startTime = DateTime.Now;
         _gameState = GameStates.Playing;
+        _selectedSquares = 0;
     }
 
     private void UpdateBombCount(int x, int y, int x1, int y1)
@@ -123,34 +124,31 @@ public class Board
             for (int y = 0; y < numYTiles; y++)
                 _tiles[x, y].Draw();
 
-        var span = _gameState == GameStates.Playing ? DateTime.Now.Subtract(_startTime) : _endTime.Subtract(_startTime);
-        Raylib.DrawText($"Time: {span.ToString("ss")}, Bombs: {numBombs - selectedSquares}", 5, 5, 20, Raylib.WHITE);
+        DrawGameInfo();
         _backToMenuButton.Draw();
         _resetButton.Draw();
-
-        switch (_gameState)
-        {
-            case GameStates.Won:
-                DrawWon();
-                break;
-
-            case GameStates.Lost:
-                DrawLost();
-                break;
-        }
 
         Raylib.EndDrawing();
     }
 
-    public void DrawWon()
+    public void DrawGameInfo()
     {
-        Raylib.DrawRectangle(Constants.BOARD_OFFSET, Constants.BOARD_OFFSET_Y, 100, 100, Raylib.GREEN);
-    }
+        var state = string.Empty;
+        switch (_gameState)
+        {
+            case GameStates.Won:
+                state = "YOU WON! - ";
+                Raylib.DrawRectangle(1, 1, Raylib.GetScreenWidth() - 2, Constants.BOARD_OFFSET_Y - 2, Raylib.GREEN);
+                break;
 
-    public void DrawLost()
-    {
-        Raylib.DrawRectangle(Constants.BOARD_OFFSET, Constants.BOARD_OFFSET_Y, 100, 100, Raylib.RED);
+            case GameStates.Lost:
+                state = "YOU LOST! - ";
+                Raylib.DrawRectangle(1, 1, Raylib.GetScreenWidth() - 2, Constants.BOARD_OFFSET_Y - 2, Raylib.RED);
+                break;
+        }
 
+        var span = _gameState == GameStates.Playing ? DateTime.Now.Subtract(_startTime) : _endTime.Subtract(_startTime);
+        Raylib.DrawText($"{state}Time: {span.ToString("ss")}, Bombs: {numBombs - _selectedSquares}", 5, 5, 20, Raylib.WHITE);
     }
 
     public GameButtonActions TestMouseClick()
@@ -208,9 +206,23 @@ public class Board
             if (_gameState == GameStates.Playing)
             {
                 var selectedDelta = _tiles[tileX, tileY].CycleCoveredType();
-                selectedSquares += selectedDelta;
+                _selectedSquares += selectedDelta;
             }
         }
+
+        // Test for game win
+        if (_gameState == GameStates.Playing)
+        {
+            var blanks = 0;
+            for (int x = 0; x < numXTiles; x++)
+                for (int y = 0; y < numYTiles; y++)
+                    if (_tiles[x, y].IsBlank)
+                        blanks++;
+
+            if (blanks == (numXTiles * numYTiles) - numBombs)
+                _gameState = GameStates.Won;
+        }
+
 
         return GameButtonActions.Nothing;
     }
