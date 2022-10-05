@@ -23,6 +23,9 @@ public class Game
 
         Raylib.InitWindow(TitleScreen.TITLE_SCREEN_WIDTH, TitleScreen.TITLE_SCREEN_HEIGHT, Constants.GAME_TITLE);
         Raylib.SetTargetFPS(60);
+        var image = Raylib.LoadImage("bombfinder.ico");
+        Raylib.SetWindowIcon(image);
+        
         TitleScreen.Instance.SetupTitleScreen();
 
         // Main game loop
