@@ -3,4 +3,9 @@ Minesweeper clone made with C# and Raylib
 
 
 
-Sound Effect from <a href="https://pixabay.com/sound-effects/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=107712">Pixabay</a>
+Sound effects 
+https://opengameart.org/content/gui-sound-effects
+
+Music 
+https://opengameart.org/content/loading-screen-loop
+https://opengameart.org/content/deep-space
