@@ -26,7 +26,7 @@ public class Board
     public Board(GameDifficulties difficulty)
     {
         _difficulty = difficulty;
-
+        SoundManager.Instance.PlayMusic(GameMusic.Game);
         SetupBoard();
     }
 
@@ -121,9 +121,9 @@ public class Board
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Raylib.BLACK);
 
-         var pos = Raylib.GetMousePosition();
-         _backToMenuButton.TestHover(pos);
-         _resetButton.TestHover(pos);
+        var pos = Raylib.GetMousePosition();
+        _backToMenuButton.TestHover(pos);
+        _resetButton.TestHover(pos);
 
         // Game Header
         DrawGameInfo();
@@ -131,10 +131,10 @@ public class Board
         // Game Board
         for (int x = 0; x < numXTiles; x++)
             for (int y = 0; y < numYTiles; y++)
-                {
-                    _tiles[x, y].TestHover(pos);
-                    _tiles[x, y].Draw();
-                }
+            {
+                _tiles[x, y].TestHover(pos);
+                _tiles[x, y].Draw();
+            }
 
         // Game Buttons
         _backToMenuButton.Draw();
@@ -149,12 +149,12 @@ public class Board
         switch (_gameState)
         {
             case GameStates.Won:
-                state = "YOU WON! - ";
+                state = "YOU WON! ";
                 Raylib.DrawRectangle(1, 1, Raylib.GetScreenWidth() - 2, Constants.BOARD_OFFSET_Y - 2, Raylib.GREEN);
                 break;
 
             case GameStates.Lost:
-                state = "YOU LOST! - ";
+                state = "YOU LOST! ";
                 Raylib.DrawRectangle(1, 1, Raylib.GetScreenWidth() - 2, Constants.BOARD_OFFSET_Y - 2, Raylib.RED);
                 break;
         }
@@ -170,10 +170,15 @@ public class Board
         // Test Game buttons first
         if (Raylib.IsMouseButtonPressed(Raylib.MOUSE_LEFT_BUTTON))
         {
-            if (_backToMenuButton.TestCollision(pos)) return _backToMenuButton.Action;
+            if (_backToMenuButton.TestCollision(pos))
+            {
+                SoundManager.Instance.PlaySound(GameSounds.MenuButton);
+                return _backToMenuButton.Action;
+            }
 
             if (_resetButton.TestCollision(pos))
             {
+                SoundManager.Instance.PlaySound(GameSounds.MenuButton);
                 SetupBoard();
                 return _resetButton.Action;
             }
@@ -202,11 +207,13 @@ public class Board
             {
                 _gameState = GameStates.Lost;
                 _endTime = DateTime.Now;
+                SoundManager.Instance.PlaySound(GameSounds.GameLost);
             }
             else
             {
                 if (_tiles[tileX, tileY].Bombs == 0)
                 {
+                    SoundManager.Instance.PlaySound(GameSounds.Click);
                     stack.Push(new Tuple<int, int>(tileX, tileY));
                     UncoverBlanks();
                 }
@@ -216,6 +223,7 @@ public class Board
         {
             var selectedDelta = _tiles[tileX, tileY].CycleCoveredType();
             _selectedSquares += selectedDelta;
+            SoundManager.Instance.PlaySound(GameSounds.Click);
         }
 
         // Test for game win
@@ -229,6 +237,7 @@ public class Board
         {
             _gameState = GameStates.Won;
             _endTime = DateTime.Now;
+            SoundManager.Instance.PlaySound(GameSounds.GameWon);
         }
 
 
@@ -240,7 +249,6 @@ public class Board
 
         while (stack.Any())
         {
-            Console.WriteLine($"Stack: {stack.Count}");
             var item = stack.Pop();
             var x = item.Item1;
             var y = item.Item2;

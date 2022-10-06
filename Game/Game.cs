@@ -30,6 +30,8 @@ public class Game
         var done = false;
         while (!done && !Raylib.WindowShouldClose()) // Detect window close button or ESC key
         {
+            SoundManager.Instance.UpdateMusicStream();
+
             switch (_scene)
             {
 
@@ -54,7 +56,7 @@ public class Game
 
                         case GameButtonActions.Easy:
                             _board = new Board(GameDifficulties.Easy);
-                            _scene = GameScenes.Game;
+                            _scene = GameScenes.Game;                            
                             break;
 
                         case GameButtonActions.Medium:

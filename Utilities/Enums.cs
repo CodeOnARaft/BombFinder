@@ -43,10 +43,10 @@ public enum GameTextures
 
 public enum GameSounds
 {
-    Click = 0,
-    Explosion = 1,
-    GameWon = 2,
-    GameLost = 3
+    Click = 0, 
+    GameWon = 1,
+    GameLost = 2,
+    MenuButton = 3
 }
 
 public enum GameMusic{

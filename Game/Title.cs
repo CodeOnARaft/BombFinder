@@ -15,7 +15,7 @@ public class TitleScreen
 
 
     private List<GameButton> _buttons = new List<GameButton>();
-    private Music click;
+
     private TitleScreen()
     {
         var scd = Constants.TITLE_SCREEN_WIDTH / 2 - 100;
@@ -25,7 +25,7 @@ public class TitleScreen
         _buttons.Add(new GameButton(new Rectangle(scd, 295, 200, 50), "Credits", GameButtonActions.Credits));
         _buttons.Add(new GameButton(new Rectangle(scd, 375, 200, 50), "Exit", GameButtonActions.Exit));
 
-        click = Raylib.LoadMusicStream("sounds/click.mp3");
+        
     }
     public void SetupTitleScreen()
     {
@@ -59,7 +59,7 @@ public class TitleScreen
             foreach (var button in _buttons)
                 if (button.TestCollision(pos))
                 {
-                    SoundManager.Instance.PlaySound(GameSounds.Click);
+                    SoundManager.Instance.PlaySound(GameSounds.MenuButton);
                     return button.Action;
                 }
         }
