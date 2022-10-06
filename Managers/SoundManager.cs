@@ -30,14 +30,13 @@ public class SoundManager
         sounds.Add(Raylib.LoadSound("sounds/win.wav"));
         sounds.Add(Raylib.LoadSound("sounds/lose.wav"));
         sounds.Add(Raylib.LoadSound("sounds/button.wav"));
-
-
     }
 
     private void LoadMusic()
     {
         musics.Add(Raylib.LoadMusicStream("sounds/title.ogg"));
         musics.Add(Raylib.LoadMusicStream("sounds/game.mp3"));
+        musics.Add(Raylib.LoadMusicStream("sounds/credits.mp3"));       
         
     }
 
