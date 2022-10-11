@@ -31,6 +31,9 @@ public class TextureManager
 
          image = Raylib.LoadImage("images/bomb.png");
         _textures.Add(Raylib.LoadTextureFromImage(image));
+
+           image = Raylib.LoadImage("images/raylib_logo.png");
+        _textures.Add(Raylib.LoadTextureFromImage(image));
     }
 
     public Texture GetTexture(GameTextures texture){

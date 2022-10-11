@@ -10,6 +10,7 @@ public class Constants
     public const int BUTTON_STANDARD_HEIGHT = 50;
 
     public const int TITLE_SCREEN_WIDTH = 400;
+    public const int HALF_TITLE_SCREEN_WIDTH = TITLE_SCREEN_WIDTH / 2;
     public const int TITLE_SCREEN_HEIGHT = 450;
 
 }

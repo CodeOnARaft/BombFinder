@@ -3,7 +3,7 @@ Minesweeper clone made with C# and Raylib.
 
 
 
-# Credits
+## Credits
 
 All music and sound effects courtesy of OpenGameArt.org
 

@@ -38,7 +38,9 @@ public enum GameTextures
     Blank = 1,
     Selected = 2,
     Question = 3,
-    Bomb = 4
+    Bomb = 4,
+
+    RaylibLogo = 5
 }
 
 public enum GameSounds
