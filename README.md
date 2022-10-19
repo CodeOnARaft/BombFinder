@@ -1,6 +1,6 @@
-# BombFinder
+# Bomb Finder
 ## Overview
-Bombfinder is a Minesweeper clone made with C# and raylib.
+Bomb Finder is a Minesweeper clone made with C# and raylib.
 
 ![](images/screenshot1.png)
 
